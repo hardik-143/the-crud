@@ -72,6 +72,11 @@ sessionTokenSchema.methods.updateLastUsed = async function () {
   await this.save();
 };
 
+// remove session
+sessionTokenSchema.methods.removeSession = async function () {
+  await this.deleteOne();
+};
+
 const SessionToken = mongoose.model("SessionToken", sessionTokenSchema);
 
 export default SessionToken;

@@ -97,7 +97,7 @@ router.post("/logout", async (req, res) => {
     if (token) {
       const session = await SessionToken.findOne({ token });
       if (session) {
-        await session.invalidate();
+        await session.removeSession();
       }
     }
     res.json({ message: "Logged out successfully" });
