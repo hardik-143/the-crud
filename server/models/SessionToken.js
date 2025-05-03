@@ -1,0 +1,77 @@
+import mongoose from "mongoose";
+import crypto from "crypto";
+
+const sessionTokenSchema = new mongoose.Schema({
+  token: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+    required: true,
+  },
+  expiresAt: {
+    type: Date,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  lastUsedAt: {
+    type: Date,
+    default: Date.now,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+});
+
+// Generate a random token
+sessionTokenSchema.statics.generateToken = function () {
+  return crypto.randomBytes(32).toString("hex");
+};
+
+// Create a new session token
+sessionTokenSchema.statics.createSession = async function (userId) {
+  const token = this.generateToken();
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 7); // Token expires in 7 days
+
+  const session = new this({
+    token,
+    user: userId,
+    expiresAt,
+  });
+
+  await session.save();
+  return session;
+};
+
+// Find active session by token
+sessionTokenSchema.statics.findActiveSession = async function (token) {
+  return this.findOne({
+    token,
+    isActive: true,
+    expiresAt: { $gt: new Date() },
+  }).populate("user", "username email");
+};
+
+// Invalidate session
+sessionTokenSchema.methods.invalidate = async function () {
+  this.isActive = false;
+  await this.save();
+};
+
+// Update last used timestamp
+sessionTokenSchema.methods.updateLastUsed = async function () {
+  this.lastUsedAt = new Date();
+  await this.save();
+};
+
+const SessionToken = mongoose.model("SessionToken", sessionTokenSchema);
+
+export default SessionToken;
