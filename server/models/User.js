@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -15,6 +16,12 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true,
+  },
+  apiKey: {
+    type: String,
+    required: true,
+    unique: true,
+    default: () => crypto.randomUUID(),
   },
   password: {
     type: String,

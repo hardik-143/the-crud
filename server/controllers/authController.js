@@ -76,6 +76,7 @@ export const login = async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        apiKey: user.apiKey,
       },
       token: session.token,
     });
@@ -104,7 +105,7 @@ export const logout = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
   try {
-    console.log("Auth check headers:", req.headers);
+    // console.log("Auth check headers:", req.headers);
     const token = req.headers.authorization?.split(" ")[1];
     console.log("Token received:", token ? "Present" : "Missing");
 
@@ -113,7 +114,7 @@ export const checkAuth = async (req, res) => {
     }
 
     const session = await SessionToken.findActiveSession(token);
-    console.log("Session found:", session ? "Yes" : "No");
+    // console.log("Session found:", session ? "Yes" : "No");
 
     if (!session) {
       return res.status(401).json({ message: "Invalid or expired token" });

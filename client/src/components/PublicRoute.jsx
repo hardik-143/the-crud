@@ -6,7 +6,7 @@ const PublicRoute = () => {
 
   // If user is authenticated, redirect to dashboard
   if (token) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // Otherwise, render the public route

@@ -14,6 +14,8 @@ import "./scss/main.scss";
 import PublicRoute from "./components/PublicRoute";
 import Logout from "./components/Logout";
 import { checkAuth } from "./reducers/authSlice";
+import Dashboard from "./pages/Dashboard";
+import NotFound from "./pages/NotFound";
 function App() {
   const dispatch = useDispatch();
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
@@ -46,14 +48,14 @@ function App() {
           </Route>
 
           {/* Protected routes */}
-          <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<ProtectedRoute />}>
             {/* <Route path="/logout" element={<Logout />} /> */}
-            <Route path="/dashboard" element={<div>Dashboard</div>} />
-            <Route path="/" element={<div>Home</div>} />
+            <Route index element={<Dashboard />} />
           </Route>
 
           {/* Redirect to login for unknown routes */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </div>
