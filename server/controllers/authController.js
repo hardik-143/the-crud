@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import SessionToken from "../models/SessionToken.js";
+import { STATUS_CODE } from "../helpers/constants.js";
 
 export const register = async (req, res) => {
   try {
@@ -8,7 +9,9 @@ export const register = async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res
+        .status(STATUS_CODE.BAD_REQUEST)
+        .json({ message: "User already exists" });
     }
 
     // Create new user
@@ -23,7 +26,7 @@ export const register = async (req, res) => {
     // Create session token
     const session = await SessionToken.createSession(user._id);
 
-    res.status(201).json({
+    res.status(STATUS_CODE.CREATED).json({
       message: "User registered successfully",
       user: {
         id: user._id,
@@ -34,7 +37,7 @@ export const register = async (req, res) => {
     });
   } catch (error) {
     res
-      .status(500)
+      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
       .json({ message: "Error registering user", error: error.message });
   }
 };
@@ -46,7 +49,7 @@ export const login = async (req, res) => {
 
     if (!email || !password) {
       return res
-        .status(400)
+        .status(STATUS_CODE.BAD_REQUEST)
         .json({ message: "Email and password are required" });
     }
 
@@ -55,7 +58,7 @@ export const login = async (req, res) => {
     console.log("Found user:", user ? "Yes" : "No");
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status().json({ message: "Invalid credentials" });
     }
 
     // Check password
@@ -157,5 +160,26 @@ export const verifyToken = async (req, res, next) => {
     res
       .status(500)
       .json({ message: "Error verifying token", error: error.message });
+  }
+};
+
+export const generateNewApiKey = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    const session = await SessionToken.findActiveSession(token);
+    if (!session) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    const newApiKey = await User.generateNewApiKey(session.user._id);
+    res.json({ message: "New API key generated", apiKey: newApiKey });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error generating new API key", error: error.message });
   }
 };

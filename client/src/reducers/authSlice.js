@@ -4,6 +4,7 @@ import {
   logout as _logout,
   register as _register,
   checkAuth as _checkAuth,
+  generateNewApiKey,
 } from "../services/auth";
 import { handleLogoutLocal } from "../helpers/utils";
 
@@ -89,6 +90,22 @@ export const handleLogout = createAsyncThunk(
   }
 );
 
+export const makeNewApiKey = createAsyncThunk(
+  "auth/makeNewApiKey",
+  async (_, { dispatch, getState }) => {
+    try {
+      const response = await generateNewApiKey();
+      const { apiKey } = response;
+      dispatch(updateUser({ apiKey }));
+    } catch (error) {
+      dispatch(
+        setError(error.response?.data?.message || "Generate new api key failed")
+      );
+      throw error;
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -137,6 +154,12 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    updateUser: (state, action) => {
+      state.user = {
+        ...state.user,
+        ...action.payload,
+      };
+    },
   },
 });
 
@@ -150,6 +173,7 @@ export const {
   registerFailure,
   logout,
   clearError,
+  updateUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;

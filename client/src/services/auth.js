@@ -15,3 +15,7 @@ export const logout = async () => {
 export const checkAuth = async () => {
   return get("/auth/check");
 };
+
+export const generateNewApiKey = async () => {
+  return post("/auth/generate-new-api-key");
+};

@@ -62,6 +62,12 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   }
 };
 
+userSchema.statics.generateNewApiKey = async function (userId) {
+  const newApiKey = crypto.randomUUID();
+  await this.findByIdAndUpdate(userId, { apiKey: newApiKey });
+  return newApiKey;
+};
+
 const User = mongoose.model("users", userSchema);
 
 export default User;

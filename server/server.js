@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import session from "express-session";
 import connectDB from "./db.js";
 import authRoutes from "./routes/auth.js";
-
+import todoRoutes from "./routes/todo.js";
 // Load environment variables
 dotenv.config();
 
@@ -25,7 +25,7 @@ app.use(
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
   })
-);
+); // session configuration
 
 // CORS configuration
 app.use(
@@ -43,11 +43,12 @@ app.use(
 );
 
 // Middleware
-app.use(express.json());
+app.use(express.json()); // parse json bodies in the request
+app.use(express.urlencoded({ extended: true })); // parse urlencoded bodies in the request
 
 // Routes
 app.use("/api/auth", authRoutes);
-
+app.use("/api/todo", todoRoutes);
 // Basic route for testing
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the CRUD API" });

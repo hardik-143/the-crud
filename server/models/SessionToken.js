@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import crypto from "crypto";
+import { generateJWT, verifyJWT } from "../helpers/utils.js";
 
 const sessionTokenSchema = new mongoose.Schema({
   token: {
@@ -31,13 +32,14 @@ const sessionTokenSchema = new mongoose.Schema({
 });
 
 // Generate a random token
-sessionTokenSchema.statics.generateToken = function () {
-  return crypto.randomBytes(32).toString("hex");
+sessionTokenSchema.statics.generateToken = function (userId) {
+  const user = { id: userId };
+  return generateJWT(user);
 };
 
 // Create a new session token
 sessionTokenSchema.statics.createSession = async function (userId) {
-  const token = this.generateToken();
+  const token = this.generateToken(userId);
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7); // Token expires in 7 days
 
@@ -53,7 +55,9 @@ sessionTokenSchema.statics.createSession = async function (userId) {
 
 // Find active session by token
 sessionTokenSchema.statics.findActiveSession = async function (token) {
-  console.log("findActiveSession", token);
+  // console.log("findActiveSession", token);
+  const decoded = verifyJWT(token);
+  // console.log("decoded", decoded);
   return this.findOne({
     token,
     isActive: true,
