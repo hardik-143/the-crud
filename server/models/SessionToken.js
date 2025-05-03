@@ -53,6 +53,7 @@ sessionTokenSchema.statics.createSession = async function (userId) {
 
 // Find active session by token
 sessionTokenSchema.statics.findActiveSession = async function (token) {
+  console.log("findActiveSession", token);
   return this.findOne({
     token,
     isActive: true,
