@@ -49,7 +49,8 @@ export const getTodos = async (req, res) => {
 };
 
 export const getTodo = async (req, res) => {
-  const { id, apiKey } = req.body;
+  const { apiKey } = req.body;
+  const { id: todoId } = req.params;
 
   const user = await User.findOne({ apiKey });
   if (!user) {
@@ -110,3 +111,4 @@ export const deleteTodo = async (req, res) => {
     });
   }
 };
+

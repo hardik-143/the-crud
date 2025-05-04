@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ApiDocumentation from "./components/ApiDocumentation";
 
 import "./scss/main.scss";
 import PublicRoute from "./components/PublicRoute";
@@ -38,7 +39,7 @@ function App() {
   //   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <Router>
         <Routes>
           {/* Public routes */}
@@ -51,6 +52,7 @@ function App() {
           <Route path="/" element={<ProtectedRoute />}>
             {/* <Route path="/logout" element={<Logout />} /> */}
             <Route index element={<Dashboard />} />
+            <Route path="/api-docs" element={<ApiDocumentation />} />
           </Route>
 
           {/* Redirect to login for unknown routes */}
