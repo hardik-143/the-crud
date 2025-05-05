@@ -34,12 +34,9 @@ const ApiCallexample = ({ route }) => {
         ref={contentRef}
         role="region"
         aria-labelledby={`collapsible-${route.path}`}
-        className={`overflow-hidden transition-all duration-500 ease-in-out  border-t  ${
-          isOpen ? "border-[#222831]" : "border-t-transparent"
+        className={`overflow-hidden transition-all duration-500 ease-in-out  border-t  border-[#222831] ${
+          isOpen ? "visible" : "hidden"
         }`}
-        style={{
-          maxHeight: isOpen ? `${contentRef.current?.scrollHeight}px` : "0px",
-        }}
       >
         <div className="p-4">
           <p className="text-gray-600 mb-4">{route.description}</p>
