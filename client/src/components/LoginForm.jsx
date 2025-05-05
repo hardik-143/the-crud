@@ -6,8 +6,8 @@ import { clearError, handleLogin, setError } from "../reducers/authSlice";
 const LoginForm = () => {
   console.log("LoginForm 00000");
   const [formData, setFormData] = useState({
-    email: "hardik@yopmail.com",
-    password: "Password1!",
+    email: "",
+    password: "",
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
