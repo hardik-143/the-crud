@@ -31,3 +31,17 @@ export const handleLogoutLocal = () => {
   useNavigateUtil("/login");
 };
 
+export const getMethodColor = (method) => {
+  switch (method) {
+    case "GET":
+      return "#22c55e";
+    case "POST":
+      return "#3b82f6";
+    case "PUT":
+      return "#f97316";
+    case "DELETE":
+      return "#ef4444";
+    default:
+      return "#6b7280";
+  }
+};

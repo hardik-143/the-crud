@@ -1,7 +1,96 @@
 import React, { useRef, useState } from "react";
+import { useEffect } from "react";
+import { getMethodColor } from "../helpers/utils";
+
+const ApiCallexample = ({ route }) => {
+  const contentRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("request");
+
+  return (
+    <div className=" rounded-lg overflow-hidden bg-white shadow-sm border border-[#222831]">
+      <div
+        className="bg-gray-50 p-4 flex items-center gap-4"
+        role="button"
+        aria-expanded={isOpen}
+        aria-controls={`collapsible-${route.path}`}
+        onClick={() =>
+          // toggleTab(
+          //   index,
+          //   activeTab[index] === null ? "request" : null
+          // )
+          setIsOpen(!isOpen)
+        }
+      >
+        <span
+          className="px-3 py-1 rounded text-white font-medium text-sm"
+          style={{ backgroundColor: getMethodColor(route.method) }}
+        >
+          {route.method}
+        </span>
+        <h3 className="text-lg font-medium">{route.path}</h3>
+      </div>
+      <div
+        ref={contentRef}
+        role="region"
+        aria-labelledby={`collapsible-${route.path}`}
+        className={`overflow-hidden transition-all duration-500 ease-in-out  border-t  ${
+          isOpen ? "border-[#222831]" : "border-t-transparent"
+        }`}
+        style={{
+          maxHeight: isOpen ? `${contentRef.current?.scrollHeight}px` : "0px",
+        }}
+      >
+        <div className="p-4">
+          <p className="text-gray-600 mb-4">{route.description}</p>
+          <div className="border rounded-lg overflow-hidden">
+            <div className="flex border-b">
+              <button
+                className={`flex-1 px-4 py-2 text-sm font-medium ${
+                  activeTab === "request"
+                    ? "bg-blue-50 text-blue-600 border-b-2 border-blue-500"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
+                onClick={() => setActiveTab("request")}
+              >
+                Request
+              </button>
+              <button
+                className={`flex-1 px-4 py-2 text-sm font-medium ${
+                  activeTab === "response"
+                    ? "bg-blue-50 text-blue-600 border-b-2 border-blue-500"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
+                onClick={() => setActiveTab("response")}
+              >
+                Response
+              </button>
+            </div>
+            <div className="p-4">
+              {activeTab === "request" && (
+                <div className="overflow-auto max-h-[300px]">
+                  <pre className="text-sm whitespace-pre-wrap">
+                    {JSON.stringify(route.example.request, null, 2)}
+                  </pre>
+                </div>
+              )}
+              {activeTab === "response" && (
+                <div className="overflow-auto max-h-[300px]">
+                  <pre className="text-sm whitespace-pre-wrap">
+                    {JSON.stringify(route.example.response, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ApiDocumentation = () => {
-  const [activeTab, setActiveTab] = useState({});
+  // const [activeTab, setActiveTab] = useState({});
   const apiRoutes = [
     // {
     //   group: "Authentication",
@@ -183,27 +272,12 @@ const ApiDocumentation = () => {
     },
   ];
 
-  const getMethodColor = (method) => {
-    switch (method) {
-      case "GET":
-        return "#22c55e";
-      case "POST":
-        return "#3b82f6";
-      case "PUT":
-        return "#f97316";
-      case "DELETE":
-        return "#ef4444";
-      default:
-        return "#6b7280";
-    }
-  };
-
-  const toggleTab = (routeIndex, tab) => {
-    setActiveTab((prev) => ({
-      ...prev,
-      [routeIndex]: prev[routeIndex] === tab ? null : tab,
-    }));
-  };
+  // const toggleTab = (routeIndex, tab) => {
+  //   setActiveTab((prev) => ({
+  //     ...prev,
+  //     [routeIndex]: prev[routeIndex] === tab ? null : tab,
+  //   }));
+  // };
 
   return (
     <div className="container mx-auto p-4 max-w-6xl">
@@ -214,96 +288,7 @@ const ApiDocumentation = () => {
           {/* <h2 className="text-2xl font-semibold mb-4">{group.group}</h2> */}
           <div className="space-y-4">
             {group.routes.map((route, index) => {
-              const contentRef = useRef(null);
-              const [isOpen, setIsOpen] = useState(false);
-              return (
-                <div
-                  key={index}
-                  className=" rounded-lg overflow-hidden bg-white shadow-sm border border-[#222831]"
-                >
-                  <div
-                    className="bg-gray-50 p-4 flex items-center gap-4"
-                    role="button"
-                    aria-expanded={activeTab[index] !== null}
-                    aria-controls={`collapsible-${route.path}`}
-                    onClick={() =>
-                      // toggleTab(
-                      //   index,
-                      //   activeTab[index] === null ? "request" : null
-                      // )
-                      setIsOpen(!isOpen)
-                    }
-                  >
-                    <span
-                      className="px-3 py-1 rounded text-white font-medium text-sm"
-                      style={{ backgroundColor: getMethodColor(route.method) }}
-                    >
-                      {route.method}
-                    </span>
-                    <h3 className="text-lg font-medium">{route.path}</h3>
-                  </div>
-                  <div
-                    ref={contentRef}
-                    role="region"
-                    aria-labelledby={`collapsible-${route.path}`}
-                    className={`overflow-hidden transition-all duration-500 ease-in-out  border-t  ${
-                      isOpen ? "border-[#222831]" : "border-t-transparent"
-                    }`}
-                    style={{
-                      maxHeight: isOpen
-                        ? `${contentRef.current?.scrollHeight}px`
-                        : "0px",
-                    }}
-                  >
-                    <div className="p-4">
-                      <p className="text-gray-600 mb-4">{route.description}</p>
-                      <div className="border rounded-lg overflow-hidden">
-                        <div className="flex border-b">
-                          <button
-                            className={`flex-1 px-4 py-2 text-sm font-medium ${
-                              activeTab[index] === "request"
-                                ? "bg-blue-50 text-blue-600 border-b-2 border-blue-500"
-                                : "text-gray-600 hover:bg-gray-50"
-                            }`}
-                            onClick={() => toggleTab(index, "request")}
-                          >
-                            Request
-                          </button>
-                          <button
-                            className={`flex-1 px-4 py-2 text-sm font-medium ${
-                              activeTab[index] === "response"
-                                ? "bg-blue-50 text-blue-600 border-b-2 border-blue-500"
-                                : "text-gray-600 hover:bg-gray-50"
-                            }`}
-                            onClick={() => toggleTab(index, "response")}
-                          >
-                            Response
-                          </button>
-                        </div>
-                        <div className="p-4">
-                          {activeTab[index] === "response" ? (
-                            <div className="overflow-auto max-h-[200px]">
-                              <pre className="text-sm whitespace-pre-wrap">
-                                {JSON.stringify(
-                                  route.example.response,
-                                  null,
-                                  2
-                                )}
-                              </pre>
-                            </div>
-                          ) : (
-                            <div className="overflow-auto max-h-[200px]">
-                              <pre className="text-sm whitespace-pre-wrap">
-                                {JSON.stringify(route.example.request, null, 2)}
-                              </pre>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
+              return <ApiCallexample route={route} key={index} />;
             })}
           </div>
         </div>
@@ -313,7 +298,3 @@ const ApiDocumentation = () => {
 };
 
 export default ApiDocumentation;
-
-
-
-
