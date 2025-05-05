@@ -8,7 +8,7 @@ export default function Logout() {
   const navigate = useNavigate();
   useEffect(() => {
     console.log("Logout 00000");
-    // dispatch(handleLogout());
+    dispatch(handleLogout());
   }, [dispatch, navigate]);
 
   let previousLocation = useLocation();

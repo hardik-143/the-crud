@@ -50,7 +50,7 @@ function App() {
 
           {/* Protected routes */}
           <Route path="/" element={<ProtectedRoute />}>
-            {/* <Route path="/logout" element={<Logout />} /> */}
+            <Route path="/logout" element={<Logout />} />
             <Route index element={<Dashboard />} />
             <Route path="/api-docs" element={<ApiDocumentation />} />
           </Route>
